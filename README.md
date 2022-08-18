@@ -106,6 +106,42 @@ To run the application using `docker-compose` run the following commands,
 docker-compose up
 ```
 
+Validate all the endpoints are working for both the apps or not using the following command,
+
+```bash
+curl -X 'POST' \
+  'http://0.0.0.0:8001/app1/heroes/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "name": "app1",
+  "secret_name": "hero1",
+  "age": 1
+}' && \
+curl -X 'POST' \
+  'http://0.0.0.0:8002/app2/heroes/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "name": "app2",
+  "secret_name": "hero2",
+  "age": 2
+}'
+```
+
+If this returns expected response, then we can be sure that the create hero endpoints are working fine. Post this we can check csv download is working or not using the following commands,
+
+```bash
+curl -X 'GET' \
+  'http://0.0.0.0:8001/app1/get_csv' \
+  -H 'accept: application/json' && \
+curl -X 'GET' \
+  'http://0.0.0.0:8002/app2/get_csv' \
+  -H 'accept: application/json'
+```
+
 __Note:__ In this setup the DB will be inside a container. If you want to have consistent data in your local and inside the docker-compose setup. You need to move the local db from project root to the `data` directory. This is already being copied inside the docker image. Also you need to change the DB path in `main.py`. 
 
 __Note:__ Do not use the same docker image for production. It will have the data directory inside the docker image. Ideally it has to be mounted using kubernetes or docker-compose. Also, the current setup will have DBs inside the container itself. But when we have some real data the DB's can be separated as docker container and we can use the same.
